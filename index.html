@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaki — Portofolio Pribadi</title>
+<meta name="description" content="Portofolio pribadi Zaki — siswa SMK kelas 12 yang sedang menempuh jalan menuju full-stack development.">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<script>
+/* Set tema sebelum render agar tidak berkedip — default gelap */
+(function(){try{var t=localStorage.getItem('zaki-theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKEN TEMA ============
+     --ink  : warna teks/border saat ini (menyesuaikan tema)
+     --fill : warna kebalikannya (untuk hover tombol yang terisi)   */
+  :root{
+    --page:#F5F4F0;              /* mode terang: background putih */
+    --ink:#0B0B0B;               /* teks hitam saat background putih */
+    --fill:#F5F4F0;
+    --panel:#0B0B0B;             /* dashboard selalu hitam */
+    --panel-ink:#F5F4F0;         /* teks dashboard selalu terang */
+    --red:#FF3D3D; --green:#3DFF88; --blue:#3D9BFF; --violet:#B03DFF;
+  }
+  html[data-theme="dark"]{
+    --page:#070707;              /* mode gelap: background hitam */
+    --ink:#F5F4F0;               /* teks putih saat background hitam */
+    --fill:#070707;
+    --panel:#101010;
+    --panel-ink:#F5F4F0;
+  }
+
+  /* ============ DASAR ============ */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk',ui-sans-serif,sans-serif;
+    background:var(--page);color:var(--ink);line-height:1.55;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    transition:background-color .35s ease,color .35s ease;
+  }
+  img,svg{display:block}
+  a{color:inherit}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  ol,ul{list-style:none}
+  ::selection{background:var(--ink);color:var(--fill)}
+  :focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
+  ::-webkit-scrollbar{width:10px}
+  ::-webkit-scrollbar-track{background:var(--page)}
+  ::-webkit-scrollbar-thumb{background:var(--ink);border:2px solid var(--page)}
+  section[id],div[id]{scroll-margin-top:96px}
+
+  .wrap{max-width:1360px;margin-inline:auto;padding-inline:clamp(1.1rem,4vw,3rem)}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  /* Animasi RGB ringan: hanya hue-rotate (dihitung GPU) di elemen kecil */
+  @keyframes hueSpin{to{filter:hue-rotate(360deg)}}
+
+  /* ============ PROGRESS BAR RGB ============ */
+  .progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;pointer-events:none}
+  .progress span{
+    display:block;height:100%;
+    background:linear-gradient(90deg,var(--red),var(--green),var(--blue),var(--violet));
+    transform:scaleX(0);transform-origin:0 50%;
+    animation:hueSpin 6s linear infinite;
+  }
+
+  /* ============ HEADER ============ */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:var(--page);border-bottom:2px solid var(--ink);
+    transition:background-color .35s ease,border-color .35s ease;
+  }
+  .header-inner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:1.2rem;padding-block:.8rem}
+  .logo{font-family:'Anton',sans-serif;font-size:1.5rem;letter-spacing:.02em;text-decoration:none;text-transform:uppercase}
+  .logo-mark{font-size:.65em;vertical-align:super}
+  .nav{display:flex;gap:1.7rem}
+  .nav a{
+    position:relative;text-decoration:none;text-transform:uppercase;
+    font-size:.78rem;font-weight:500;letter-spacing:.16em;opacity:.6;
+    transition:opacity .2s;
+  }
+  .nav a::after{
+    content:'';position:absolute;left:0;bottom:-5px;height:2px;width:100%;
+    background:var(--ink);transform:scaleX(0);transform-origin:right;transition:transform .3s ease;
+  }
+  .nav a:hover,.nav a.active{opacity:1}
+  .nav a:hover::after,.nav a.active::after{transform:scaleX(1);transform-origin:left}
+  .icon-btn.menu-toggle{display:none}
+  .header-right{display:flex;align-items:center;gap:1rem}
+  .clock{font-size:.8rem;font-variant-numeric:tabular-nums;letter-spacing:.08em;opacity:.85}
+
+  /* ============ TOMBOL — semuanya ber-border ============ */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:.6rem;
+    border:2px solid var(--ink);background:transparent;color:var(--ink);
+    padding:.85rem 1.4rem;text-transform:uppercase;letter-spacing:.08em;
+    font-weight:500;font-size:.88rem;text-decoration:none;
+    transition:background-color .22s,color .22s,transform .25s cubic-bezier(.2,.8,.2,1);
+  }
+  .btn:hover{background:var(--ink);color:var(--fill)}
+  .btn svg{width:16px;height:16px;flex:none}
+  .btn-lg{padding:1rem 1.8rem;font-size:.98rem}
+  .icon-btn{
+    width:44px;height:44px;border:2px solid var(--ink);color:var(--ink);
+    display:grid;place-items:center;
+    transition:background-color .22s,color .22s;
+  }
+  .icon-btn:hover{background:var(--ink);color:var(--fill)}
+  .icon-btn svg{width:18px;height:18px}
+  #themeToggle .ic-sun,#themeToggle .ic-moon{display:none}
+  html[data-theme="dark"]  #themeToggle .ic-sun{display:block}
+  html[data-theme="light"] #themeToggle .ic-moon{display:block}
+
+  /* ============ HERO ============ */
+  .hero{
+    display:grid;grid-template-columns:minmax(290px,400px) 1fr;
+    gap:clamp(2.5rem,6vw,6rem);align-items:center;
+    padding-top:clamp(2.5rem,7vh,5rem);padding-bottom:clamp(3rem,9vh,5.5rem);
+  }
+  /* Foto profil + bingkai + lapisan RGB di belakang */
+  .photo-wrap{position:relative;margin:0 14px 14px 0}
+  .rgb-back{
+    position:absolute;inset:0;transform:translate(14px,14px);z-index:0;
+    border:3px solid var(--green);
+    animation:hueSpin 9s linear infinite;
+  }
+  .photo-frame{
+    position:relative;z-index:1;aspect-ratio:4/5;overflow:hidden;
+    border:3px solid var(--ink);background:var(--page);
+    transition:border-color .35s ease,background-color .35s ease;
+  }
+  .photo-frame img{
+    width:100%;height:100%;object-fit:cover;
+    filter:grayscale(1) contrast(1.05);
+    transition:filter .45s ease,transform .6s ease;
+  }
+  .photo-frame:hover img{filter:grayscale(0);transform:scale(1.035)}
+  /* Sosmed tepat di bawah foto profil */
+  .socials{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1.6rem}
+  .social-btn{
+    border:2px solid var(--ink);color:var(--ink);background:transparent;
+    display:flex;align-items:center;justify-content:center;gap:.55rem;
+    padding:.85rem .5rem;text-transform:uppercase;letter-spacing:.06em;
+    font-size:.9rem;font-weight:500;text-decoration:none;
+    transition:background-color .22s,color .22s;
+  }
+  .social-btn:hover{background:var(--ink);color:var(--fill)}
+  .social-btn svg{width:17px;height:17px;flex:none}
+
+  .eyebrow{
+    display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;
+    font-size:.76rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;
+  }
+  .eyebrow::before{content:'';width:42px;height:2px;background:var(--ink);flex:none}
+  h1{
+    font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;
+    font-size:clamp(4.6rem,16vw,11rem);line-height:.92;letter-spacing:.01em;
+  }
+  .h-dot{color:var(--ink)}
+  @supports(-webkit-background-clip:text){
+    .h-dot{
+      background:linear-gradient(135deg,var(--red),var(--green),var(--blue));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      animation:hueSpin 7s linear infinite;
+    }
+  }
+  .rgb-line{
+    height:6px;width:min(340px,62%);margin:1.6rem 0 1.7rem;
+    background:linear-gradient(90deg,var(--red),var(--green),var(--blue),var(--violet),var(--red));
+    animation:hueSpin 7s linear infinite;
+  }
+  .rotline{font-size:clamp(1.05rem,1.6vw,1.3rem);color:var(--ink);line-height:1.6}
+  .rotor{
+    display:inline-grid;vertical-align:bottom;overflow:hidden;white-space:nowrap;
+    transition:width .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .rotor-word{
+    grid-area:1/1;justify-self:start;
+    font-family:'Anton',sans-serif;text-transform:uppercase;font-weight:400;
+    font-size:1.06em;letter-spacing:.04em;line-height:1.2;
+    opacity:0;transform:translateY(70%);
+    transition:opacity .4s ease,transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .rotor-word.on{opacity:1;transform:none}
+  .rotor.static{width:auto!important}
+  .rotor.static .rotor-word:not(.on){display:none}
+  .lede{margin-top:1.2rem;max-width:54ch;font-size:clamp(1rem,1.4vw,1.15rem);line-height:1.65;opacity:.88}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:2.2rem}
+  .meta{display:flex;flex-wrap:wrap;gap:1.9rem;margin-top:2.3rem;font-size:.9rem}
+  .meta li{display:flex;align-items:center;gap:.55rem}
+  .meta svg{width:16px;height:16px;flex:none}
+  .rgb-dot{
+    width:9px;height:9px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,var(--red),var(--green),var(--blue));
+    animation:hueSpin 5s linear infinite;
+  }
+
+  /* ============ MARQUEE ============ */
+  .marquee{
+    overflow:hidden;background:var(--ink);color:var(--fill);
+    border-block:2px solid var(--ink);padding-block:.8rem;
+    transition:background-color .35s ease,color .35s ease;
+  }
+  .marquee-track{display:flex;width:max-content;will-change:transform;animation:marquee 30s linear infinite}
+  .marquee:hover .marquee-track{animation-play-state:paused}
+  .marquee-track span{
+    font-family:'Anton',sans-serif;text-transform:uppercase;white-space:nowrap;
+    font-size:clamp(1.4rem,3.4vw,2.3rem);letter-spacing:.02em;padding-right:1.2rem;
+  }
+  @keyframes marquee{to{transform:translate3d(-50%,0,0)}}
+
+  /* ============ DASHBOARD HITAM ============ */
+  .panel{
+    --ink:var(--panel-ink);   /* di dalam panel, semua otomatis terbalik */
+    --fill:var(--panel);
+    background:var(--panel);color:var(--panel-ink);
+    border:2px solid var(--panel-ink);
+    margin:clamp(2.6rem,6vw,4.5rem) clamp(1rem,3vw,2.4rem);
+    transition:background-color .35s ease;
+  }
+  .panel-head{
+    display:flex;flex-wrap:wrap;gap:.6rem 2rem;justify-content:space-between;
+    padding:1rem clamp(1rem,3vw,2.4rem);border-bottom:2px solid var(--ink);
+    font-size:.74rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  }
+  .about-grid{
+    display:grid;grid-template-columns:1.06fr .94fr;
+    gap:clamp(2.2rem,5vw,5rem);padding:clamp(2.2rem,5vw,4rem) clamp(1rem,3vw,2.4rem) clamp(2.2rem,5vw,3.6rem);
+  }
+  .label{
+    display:flex;align-items:center;gap:.65rem;margin-bottom:1.3rem;
+    font-size:.74rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+  }
+  .label::before{content:'';width:9px;height:9px;background:currentColor;flex:none}
+  .about-title{
+    font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;
+    font-size:clamp(1.8rem,3.4vw,2.9rem);line-height:1.08;letter-spacing:.01em;
+  }
+  .about-text p{margin-top:1.15rem;max-width:58ch;line-height:1.7;opacity:.88;font-size:.98rem}
+  .stats{display:flex;border-block:2px solid var(--ink);margin-top:2.5rem}
+  .stat{flex:1;padding:1.2rem 1rem}
+  .stat + .stat{border-left:2px solid var(--ink)}
+  .stat-num{
+    display:block;font-family:'Anton',sans-serif;
+    font-size:clamp(1.55rem,3vw,2.4rem);line-height:1;letter-spacing:.01em;
+  }
+  .stat-label{display:block;margin-top:.45rem;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;opacity:.72}
+
+  /* Baris keahlian */
+  .skill-row{
+    display:grid;grid-template-columns:2.6rem 1fr;align-items:baseline;
+    padding:1.05rem .5rem;border-bottom:2px solid var(--ink);
+    transition:background-color .2s,color .2s,padding .2s;
+  }
+  .skill-row:first-child{border-top:2px solid var(--ink)}
+  .skill-row:hover{background:var(--ink);color:var(--fill);padding-inline:1rem}
+  .sk-num{font-size:.76rem;opacity:.65}
+  .sk-name{
+    font-family:'Anton',sans-serif;text-transform:uppercase;
+    font-size:clamp(1.15rem,2vw,1.7rem);line-height:1.15;letter-spacing:.02em;
+  }
+  .sk-tools{display:block;margin-top:.25rem;font-size:.83rem;opacity:.72}
+  .honest-note{
+    margin-top:1.8rem;border-left:3px solid var(--ink);padding-left:1.3rem;
+    max-width:52ch;font-size:.93rem;line-height:1.65;opacity:.85;
+  }
+
+  /* Laporan magang */
+  .projects{padding:0 clamp(1rem,3vw,2.4rem) clamp(2.2rem,5vw,4rem)}
+  .share-box{display:flex;align-items:center;justify-content:space-between;gap:2rem;margin:0;padding:1.4rem;border:2px solid var(--ink)}
+  .share-box .label{margin-bottom:.7rem}
+  .share-box .about-title{font-size:clamp(1.6rem,3vw,2.25rem)}
+  .share-message{margin-top:.65rem;max-width:58ch;line-height:1.65;opacity:.8}
+  .share-actions{display:flex;flex-wrap:wrap;gap:.7rem;flex:none}
+  @media(max-width:720px){.share-box{align-items:stretch;flex-direction:column}.share-actions{display:grid;grid-template-columns:1fr 1fr}}
+  .report-lede{max-width:66ch;margin-top:1rem;line-height:1.7;opacity:.88;font-size:.98rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.4rem}
+  .chip2{
+    display:inline-flex;align-items:center;gap:.55rem;
+    border:1.5px solid var(--ink);padding:.5rem .85rem;
+    font-size:.66rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;opacity:.85;
+  }
+  .chip2 svg{width:13px;height:13px}
+  a.chip2{text-decoration:none;transition:background-color .2s,color .2s,opacity .2s}
+  a.chip2:hover{background:var(--ink);color:var(--fill);opacity:1}
+  .pr-hint{margin:1.9rem 0 .4rem;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;opacity:.55}
+  .project-row{
+    width:100%;text-align:left;
+    display:grid;grid-template-columns:3rem 1fr auto 44px;align-items:center;gap:1.2rem;
+    padding:1.45rem .4rem;border-bottom:2px solid var(--ink);
+    transition:background-color .2s,color .2s,padding .2s;
+  }
+  .project-row:first-of-type{border-top:2px solid var(--ink)}
+  .project-row:hover{background:var(--ink);color:var(--fill);padding-inline:1.1rem}
+  .pr-num{font-size:.78rem;opacity:.65}
+  .pr-title{
+    font-family:'Anton',sans-serif;text-transform:uppercase;
+    font-size:clamp(1.25rem,2.6vw,2.1rem);line-height:1.08;letter-spacing:.01em;
+  }
+  .pr-meta{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+  .pr-arrow{
+    width:36px;height:36px;border:2px solid currentColor;
+    display:grid;place-items:center;justify-self:end;
+  }
+  .pr-arrow svg{width:16px;height:16px;transition:transform .25s ease}
+  .project-row:hover .pr-arrow svg{transform:rotate(45deg)}
+
+  /* ============ SEKSI DI LUAR PANEL ============ */
+  .sec{padding-block:clamp(3.5rem,8vw,5.5rem)}
+  .sec-head{
+    display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+    border-top:2px solid var(--ink);padding-top:.8rem;
+    margin-bottom:clamp(1.9rem,5vw,3rem);
+    transition:border-color .35s ease;
+  }
+  .sec-no{font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase}
+  .sec-note{font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;opacity:.55;text-align:right}
+  .sec-title{
+    font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;
+    font-size:clamp(2rem,5vw,3.6rem);line-height:1.02;letter-spacing:.01em;max-width:24ch;
+  }
+  .sec-sub{margin-top:1rem;max-width:58ch;font-size:1.02rem;line-height:1.7;opacity:.82}
+  .outline{color:transparent;-webkit-text-stroke:2px var(--ink)}
+  @media(min-width:768px){.outline{-webkit-text-stroke:2.5px var(--ink)}}
+  @supports not (-webkit-text-stroke:1px black){.outline{color:var(--ink)}}
+
+  /* Minat — akordeon */
+  .sprouts li{border-top:1.5px solid var(--ink)}
+  .sprouts li:last-child{border-bottom:1.5px solid var(--ink)}
+  .spr-btn{
+    width:100%;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:1.05rem;
+    padding:1.15rem .3rem;text-align:left;transition:padding .2s;
+  }
+  .spr-btn:hover{padding-inline:.9rem}
+  .spr-dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--ink);transition:background-color .3s}
+  .spr-item.open .spr-dot{background:var(--ink)}
+  .spr-name{
+    font-family:'Anton',sans-serif;text-transform:uppercase;
+    font-size:clamp(1.15rem,2.4vw,1.6rem);letter-spacing:.02em;line-height:1.15;
+  }
+  .spr-tag{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;opacity:.55}
+  .spr-chev{width:16px;height:16px;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .spr-item.open .spr-chev{transform:rotate(180deg)}
+  .spr-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.2,.8,.2,1)}
+  .spr-item.open .spr-panel{grid-template-rows:1fr}
+  .spr-inner{overflow:hidden}
+  .spr-inner p{padding:0 .3rem 1.3rem 2.3rem;max-width:58ch;font-size:.96rem;line-height:1.65;opacity:.78}
+  .spr-hint{margin-top:1rem;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;opacity:.5}
+
+  /* Arah & tujuan */
+  .compass li{
+    display:grid;grid-template-columns:3rem 200px 1fr;gap:1.4rem;
+    padding:1.5rem .3rem;border-top:1.5px solid var(--ink);
+  }
+  .compass li:last-child{border-bottom:1.5px solid var(--ink)}
+  .cp-no{font-size:.78rem;font-weight:500}
+  .cp-label{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;opacity:.55;padding-top:.25rem}
+  .compass p{max-width:56ch;line-height:1.65;opacity:.85}
+  .manifesto{
+    margin-top:clamp(2.4rem,6vw,3.6rem);border-left:4px solid var(--ink);padding-left:1.5rem;
+    font-family:'Anton',sans-serif;text-transform:uppercase;
+    font-size:clamp(1.35rem,3.4vw,2.2rem);line-height:1.3;max-width:30ch;
+  }
+
+  /* Kontak */
+  .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:1.1rem;margin-top:2.4rem}
+  .documentation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1.2rem;margin-top:2rem}
+  .documentation-card{min-width:0;border:2px solid var(--ink);background:var(--page)}
+  .documentation-card figure{margin:0}
+  .documentation-image{display:block;width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--panel)}
+  .documentation-image img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+  .documentation-card:hover .documentation-image img{transform:scale(1.025)}
+  .documentation-copy{padding:1.2rem}
+  .documentation-copy h3{font:400 clamp(1.2rem,2.2vw,1.6rem)/1.15 'Anton',sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
+  .documentation-copy p{margin-top:.8rem;font-size:.94rem;line-height:1.65;overflow-wrap:anywhere}
+  .documentation-opinion{margin-top:1rem;padding-left:1rem;border-left:2px solid var(--green);font-style:italic;opacity:.8}
+  .documentation-empty{margin-top:2rem;padding:1.4rem;border:1.5px dashed var(--ink);font-size:.92rem;opacity:.75}
+  .cc{
+    display:flex;flex-direction:column;gap:.45rem;text-align:left;
+    border:2px dashed var(--ink);padding:1.4rem 1.3rem;min-height:168px;
+    transition:transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .cc:hover{transform:translateY(-4px)}
+  .cc svg{width:20px;height:20px;margin-bottom:.4rem}
+  .cc-top{font-size:.62rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
+  .cc-val{font-weight:700;font-size:1.02rem;word-break:break-word}
+  .cc-note{font-size:.78rem;font-style:italic;opacity:.6}
+  .cc-live{
+    --ink:var(--panel-ink);--fill:var(--panel);
+    border:2px solid var(--panel);background:var(--panel);color:var(--panel-ink);
+    text-decoration:none;
+  }
+  .cc-live:hover{transform:translateY(-4px)}
+  .cc-live .cc-top{opacity:.6}
+  .cc-live .cc-note{opacity:.65}
+  .cc-hint{margin-top:1.2rem;font-size:.84rem;font-style:italic;opacity:.6}
+
+  /* ============ FOOTER (selalu hitam) ============ */
+  .site-foot{
+    --ink:var(--panel-ink);--fill:var(--panel);
+    margin-top:clamp(3rem,7vh,5rem);
+    background:var(--panel);color:var(--panel-ink);
+    border-top:2px solid var(--panel-ink);
+  }
+  .foot-inner{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.2rem;
+    padding-block:1.9rem;
+  }
+  .foot-brand{display:flex;align-items:baseline;gap:.9rem}
+  .foot-z{font-family:'Anton',sans-serif;font-size:1.7rem;text-transform:uppercase}
+  .foot-c{font-size:.88rem;opacity:.85}
+  .foot-note{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;opacity:.5}
+  .foot-right{display:flex;align-items:center;gap:.6rem}
+
+  /* ============ MODAL ============ */
+  .modal{
+    position:fixed;inset:0;z-index:100;display:grid;place-items:center;
+    padding:1.2rem;visibility:hidden;opacity:0;pointer-events:none;
+    transition:opacity .3s ease,visibility .3s ease;
+  }
+  .modal.open{visibility:visible;opacity:1;pointer-events:auto}
+  .modal-backdrop{position:absolute;inset:0;background:rgba(4,4,4,.74)}
+  .modal-box{
+    --ink:var(--panel-ink);--fill:var(--panel);
+    position:relative;width:100%;max-width:620px;
+    background:var(--panel);color:var(--panel-ink);
+    border:2px solid var(--panel-ink);
+    padding:clamp(1.5rem,4vw,2.6rem);
+    transform:translateY(26px);
+    transition:transform .35s cubic-bezier(.2,.9,.2,1);
+    max-height:88vh;overflow:auto;
+  }
+  .modal.open .modal-box{transform:none}
+  .modal-head{display:flex;align-items:flex-start;gap:1rem}
+  .modal-index{
+    font-family:'Anton',sans-serif;font-size:.95rem;
+    border:2px solid var(--ink);padding:.3rem .55rem;flex:none;
+  }
+  .modal-head h3{
+    font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;
+    font-size:clamp(1.3rem,3.5vw,1.9rem);line-height:1.08;flex:1;
+  }
+  .modal-desc{margin-block:1.4rem;line-height:1.7;opacity:.88;font-size:.98rem}
+  .modal-meta{display:grid;grid-template-columns:repeat(3,1fr);border-block:2px solid var(--ink)}
+  .mm{padding:.9rem .3rem}
+  .mm + .mm{border-left:2px solid var(--ink)}
+  .mm dt{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+  .mm dd{margin-top:.3rem;font-weight:600;font-size:.9rem}
+  .modal-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.3rem}
+  .tag{border:1.5px solid var(--ink);padding:.3rem .65rem;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+
+  /* ============ TOAST ============ */
+  .toast{
+    --ink:var(--panel-ink);--fill:var(--panel);
+    position:fixed;left:50%;bottom:1.5rem;z-index:120;
+    display:flex;align-items:center;gap:.7rem;
+    background:var(--panel);color:var(--panel-ink);
+    border:2px solid var(--panel-ink);padding:.9rem 1.35rem;
+    font-size:.92rem;max-width:calc(100vw - 2.5rem);
+    transform:translate(-50%,220%);
+    transition:transform .35s cubic-bezier(.2,.9,.2,1);
+  }
+  .toast.show{transform:translate(-50%,0)}
+  .toast i{width:9px;height:9px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,var(--red),var(--green),var(--blue));
+    animation:hueSpin 5s linear infinite;
+  }
+
+  /* ============ REVEAL ============ */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .d1{transition-delay:.1s}.d2{transition-delay:.18s}.d3{transition-delay:.26s}
+
+  /* ============ RESPONSIF ============ */
+  @media(max-width:1000px){
+    .hero{grid-template-columns:1fr;gap:2.8rem}
+    .photo-block{width:100%;max-width:400px;margin-inline:auto}
+    .about-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:1000px){
+    .icon-btn.menu-toggle{display:grid;flex:none;margin-left:auto}
+    .nav{position:absolute;top:calc(100% + 2px);right:clamp(1.1rem,4vw,3rem);left:clamp(1.1rem,4vw,3rem);z-index:5;display:none;max-height:calc(100vh - 86px);overflow-y:auto;padding:.35rem 1rem;border:2px solid var(--ink);background:var(--page)}
+    .nav.open{display:grid;gap:0}
+    .nav a{padding:.8rem .15rem;border-bottom:1px solid color-mix(in srgb,var(--ink) 28%,transparent);font-size:.85rem;letter-spacing:.1em}
+    .nav a:last-child{border-bottom:0}
+    .nav a::after{display:none}
+    .clock-top{display:none}
+  }
+  @media(max-width:720px){
+    html{font-size:93.75%}
+    .project-row{grid-template-columns:auto 1fr auto;gap:.45rem 1rem}
+    .pr-num{grid-row:1}
+    .pr-title{grid-column:2;grid-row:1}
+    .pr-meta{grid-column:2;grid-row:2}
+    .pr-arrow{grid-column:3;grid-row:1/3}
+    .pr-title{min-width:0;overflow-wrap:anywhere}
+    .pr-meta{letter-spacing:.07em}
+    .contact-grid{grid-template-columns:1fr}
+    .compass li{grid-template-columns:2.4rem 1fr;grid-template-rows:auto auto}
+    .compass p{grid-column:2}
+    .spr-tag{display:none}
+    .btn{min-height:44px;padding:.75rem 1rem;font-size:.82rem;letter-spacing:.05em}
+    .btn-lg{padding:.8rem 1.2rem;font-size:.9rem}
+    .social-btn{min-height:44px;padding:.7rem .45rem;font-size:.82rem;letter-spacing:.03em}
+    .panel{margin-inline:.75rem}
+    .panel-head,.label,.sec-no{letter-spacing:.12em}
+  }
+  @media(max-width:560px){
+    .stats{flex-direction:column}
+    .stat + .stat{border-left:none;border-top:2px solid var(--ink)}
+    .modal-meta{grid-template-columns:1fr}
+    .mm + .mm{border-left:none;border-top:2px solid var(--ink)}
+    .sec-note{display:none}
+  }
+  @media(max-width:420px){
+    html{font-size:87.5%}
+    .wrap{padding-inline:1rem}
+    h1{font-size:3.8rem}
+    .eyebrow{font-size:.68rem;letter-spacing:.12em}
+    .hero-actions{gap:.65rem}
+    .hero-actions .btn{flex:1 1 100%}
+    .share-actions{grid-template-columns:1fr}
+    .panel,.share-box,.cc,.btn,.social-btn{border-width:1.5px}
+    .icon-btn{width:42px;height:42px}
+    .modal{padding:.7rem}
+    .modal-box{padding:1.1rem}
+    .toast{right:.75rem;left:.75rem;max-width:none;justify-content:center;transform:translateY(220%)}
+    .toast.show{transform:translateY(0)}
+  }
+
+  /* Hormati preferensi pengguna: matikan semua animasi */
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress scroll RGB -->
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="#top">Z<span class="logo-mark">&reg;</span></a>
+    <button class="icon-btn menu-toggle" id="menuToggle" type="button" aria-label="Buka navigasi" aria-controls="primaryNavigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <nav class="nav" id="primaryNavigation" aria-label="Navigasi utama">
+      <a href="#tentang">Tentang</a>
+      <a href="#magang">Magang</a>
+      <a href="#dokumentasi">Dokumentasi</a>
+      <a href="#minat">Minat</a>
+      <a href="#kontak">Kontak</a>
+      <a href="#bagikan">Bagikan Informasi</a>
+      <a href="#dukung">Dukung Saya</a>
+    </nav>
+    <div class="header-right">
+      <span class="clock clock-top" id="clockTop" title="Waktu Jakarta">--:--:-- WIB</span>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Ganti tema terang / gelap">
+        <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8"/></svg>
+        <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero wrap">
+    <div class="photo-block reveal">
+      <div class="photo-wrap">
+        <span class="rgb-back" aria-hidden="true"></span>
+        <div class="photo-frame">
+          <img id="profileAvatar" src="images/profile-placeholder.jpg" alt="Foto profil Zaki" width="720" height="900">
+        </div>
+      </div>
+      <!-- Sosmed di bawah foto profil -->
+      <div class="socials">
+        <a class="social-btn" href="https://www.tiktok.com/@thisiszaki18" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+          @thisiszaki18
+        </a>
+        <a class="social-btn" href="https://www.instagram.com/thisiszaki18/" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor" stroke="none"/></svg>
+          @thisiszaki18
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-text">
+      <p class="eyebrow reveal">Portofolio pribadi &copy; 2025 &mdash; siswa SMK kelas 12</p>
+      <h1 class="reveal d1"><span id="profileName">Zaki</span><span class="h-dot">.</span></h1>
+      <div class="rgb-line reveal d2" aria-hidden="true"></div>
+      <p class="rotline reveal d2">
+        <span class="sr-only">Saat ini saya sedang belajar membangun, mengembangkan, menghubungkan, dan menjalankan website.</span>
+        Saat ini saya sedang belajar
+        <span class="rotor" aria-hidden="true">
+          <span class="rotor-word on">membangun</span>
+          <span class="rotor-word">mengembangkan</span>
+          <span class="rotor-word">menghubungkan</span>
+          <span class="rotor-word">menjalankan</span>
+        </span>
+        website &mdash; dari tampilan paling depan sampai bagian belakangnya.
+      </p>
+      <p class="lede reveal d3">
+        Saya sedang menempuh jalan menuju <strong>full-stack development</strong>. Cara belajar saya sederhana:
+        pelajari, praktikkan, perbaiki, ulangi &mdash; sampai sebuah website benar-benar berjalan di internet.
+      </p>
+      <div class="hero-actions reveal d3">
+        <a class="btn btn-lg magnetic" href="#kontak">Hubungi Saya
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M13 5l7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn-lg magnetic" href="#magang">Laporan Magang</a>
+      </div>
+      <ul class="meta reveal d3">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11.5V17c0 1.2 2.7 2.5 6 2.5s6-1.3 6-2.5v-5.5"/><path d="M22 9v5"/></svg>
+          Siswa SMK &middot; Kelas 12
+        </li>
+        <li><span class="rgb-dot" aria-hidden="true"></span> Terbuka untuk belajar &amp; kolaborasi</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>HTML &bull; CSS &bull; JavaScript &bull; Responsive Design &bull; Firebase &bull; MySQL &bull; API &bull; Authentication &bull; DNS &amp; IP &bull; Deployment &bull;&nbsp;</span>
+      <span>HTML &bull; CSS &bull; JavaScript &bull; Responsive Design &bull; Firebase &bull; MySQL &bull; API &bull; Authentication &bull; DNS &amp; IP &bull; Deployment &bull;&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD HITAM ============ -->
+  <section class="panel" id="tentang">
+    <div class="panel-head">
+      <span>Dashboard &mdash; Portofolio Zaki</span>
+      <span class="clock" id="clockPanel">--:--:-- WIB</span>
+    </div>
+
+    <div class="about-grid">
+      <div class="reveal">
+        <p class="label">01 / Tentang saya</p>
+        <h2 class="about-title">Belajar dengan cara melakukannya.</h2>
+        <div class="about-text">
+          <p>
+            Saya Zaki, siswa SMK kelas 12 yang tengah mendalami pemrograman dan teknologi digital.
+            Rasa penasaran saya berkumpul di satu pertanyaan: bagaimana sebuah ide berubah menjadi
+            website yang benar-benar berjalan?
+          </p>
+          <p>
+            Saya tidak mengklaim sudah jauh &mdash; jalannya masih panjang. Tapi setiap tahap mengajarkan
+            hal yang sama: teori cepat terlupa, sementara yang pernah saya kerjakan sendiri akan menempel lama.
+            Karena itu saya memilih belajar sambil membangun.
+          </p>
+          <p>
+            Setelah lulus, saya berencana melanjutkan pendidikan tinggi dan membangun karier sebagai
+            full-stack developer &mdash; orang yang mengurus website dari tampilan paling depan
+            hingga server di belakangnya.
+          </p>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="stat-num">XII</span><span class="stat-label">Siswa SMK &mdash; kelas 12</span></div>
+          <div class="stat"><span class="stat-num">Oasse.id</span><span class="stat-label">Situs praktik magang</span></div>
+          <div class="stat"><span class="stat-num">Full-Stack</span><span class="stat-label">Arah karier saya</span></div>
+        </div>
+      </div>
+
+      <div class="reveal d1">
+        <p class="label">02 / Keahlian yang saya pelajari</p>
+        <ul>
+          <li class="skill-row"><span class="sk-num">01</span><span><span class="sk-name">HTML &middot; CSS &middot; JavaScript</span><span class="sk-tools">Bahasa dasar web &mdash; struktur, tampilan, dan interaksi</span></span></li>
+          <li class="skill-row"><span class="sk-num">02</span><span><span class="sk-name">Responsive Web Design</span><span class="sk-tools">Halaman yang tetap nyaman di ponsel maupun desktop</span></span></li>
+          <li class="skill-row"><span class="sk-num">03</span><span><span class="sk-name">Antarmuka Website</span><span class="sk-tools">Menyusun halaman agar jelas arahnya dan enak dipakai</span></span></li>
+          <li class="skill-row"><span class="sk-num">04</span><span><span class="sk-name">API &amp; Integrasi Database</span><span class="sk-tools">Menghubungkan website dengan data dan layanan lain</span></span></li>
+          <li class="skill-row"><span class="sk-num">05</span><span><span class="sk-name">Authentication</span><span class="sk-tools">Sistem masuk pengguna &mdash; dipraktikkan lewat Firebase Authentication</span></span></li>
+          <li class="skill-row"><span class="sk-num">06</span><span><span class="sk-name">Firebase &amp; MySQL</span><span class="sk-tools">Dua lingkungan kerja data yang saya gunakan saat magang</span></span></li>
+          <li class="skill-row"><span class="sk-num">07</span><span><span class="sk-name">DNS &middot; IP &middot; Deployment</span><span class="sk-tools">Dari pengaturan domain sampai website aktif secara online</span></span></li>
+        </ul>
+        <p class="honest-note">
+          Saya sengaja tidak memasang bar atau persentase &ldquo;tingkat keahlian&rdquo; &mdash; semacam itu mudah
+          ditulis, sulit dibuktikan. Cukup begini: semua di atas pernah saya pelajari atau praktikkan,
+          dan daftarnya akan terus bertambah.
+        </p>
+      </div>
+    </div>
+
+    <div class="projects" id="magang">
+      <p class="label reveal">03 / Laporan magang</p>
+      <h2 class="about-title reveal">Ketika teori akhirnya disuruh bekerja.</h2>
+      <p class="report-lede reveal d1">
+        Magang di PT Ascon Inovasi Data adalah bagian paling berkesan dari perjalanan belajar saya.
+        Di sini saya tidak hanya membaca tutorial &mdash; saya terlibat langsung dalam pembuatan dan
+        pengembangan website untuk situs oasse.id: dari urusan DNS dan IP, pekerjaan dengan data,
+        sampai menjalankan situs secara online.
+      </p>
+      <div class="chips reveal d1">
+        <a class="chip2" href="https://oasse.id" target="_blank" rel="noopener">Situs: oasse.id
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </a>
+        <span class="chip2">PT Ascon Inovasi Data</span>
+        <span class="chip2">Belajar sambil membangun</span>
+      </div>
+      <p class="pr-hint reveal d2">Klik baris untuk membaca catatan saya &rarr;</p>
+      <div class="reveal d2">
+        <button class="project-row" type="button" data-index="0">
+          <span class="pr-num">01</span>
+          <span class="pr-title">Pembuatan &amp; Pengembangan Website</span>
+          <span class="pr-meta">Magang &middot; oasse.id</span>
+          <span class="pr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+        </button>
+        <button class="project-row" type="button" data-index="1">
+          <span class="pr-num">02</span>
+          <span class="pr-title">Konfigurasi DNS &amp; IP</span>
+          <span class="pr-meta">Magang &middot; Infrastruktur</span>
+          <span class="pr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+        </button>
+        <button class="project-row" type="button" data-index="2">
+          <span class="pr-num">03</span>
+          <span class="pr-title">Firebase &amp; MySQL</span>
+          <span class="pr-meta">Magang &middot; Basis data</span>
+          <span class="pr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+        </button>
+        <button class="project-row" type="button" data-index="3">
+          <span class="pr-num">04</span>
+          <span class="pr-title">Menjalankan Website Online</span>
+          <span class="pr-meta">Magang &middot; Deployment</span>
+          <span class="pr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+        </button>
+        <button class="project-row" type="button" data-index="4">
+          <span class="pr-num">05</span>
+          <span class="pr-title">Authentication &amp; Storage</span>
+          <span class="pr-meta">Praktik &middot; Backend</span>
+          <span class="pr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="sec wrap" id="dokumentasi" aria-labelledby="documentationTitle">
+    <div class="sec-head">
+      <span class="sec-no">04 / Dokumentasi</span>
+      <span class="sec-note">catatan proses dan pembelajaran</span>
+    </div>
+    <h2 class="sec-title reveal" id="documentationTitle">Belajar, mencoba, lalu mencatat.</h2>
+    <p class="sec-sub reveal d1">Foto dan cerita singkat dari pengalaman yang membentuk perjalanan saya.</p>
+    <p class="documentation-empty" id="documentationStatus" role="status" aria-live="polite">Dokumentasi akan tampil di sini.</p>
+    <div class="documentation-grid" id="documentationGrid" aria-live="polite"></div>
+  </section>
+
+  <!-- ============ MINAT LAINNYA ============ -->
+  <section class="sec wrap" id="minat">
+    <div class="sec-head">
+      <span class="sec-no">05 / Minat lainnya</span>
+      <span class="sec-note">masih terus tumbuh</span>
+    </div>
+    <h2 class="sec-title reveal">Di luar kode, ada yang sedang saya jajaki.</h2>
+    <p class="sec-sub reveal d1">
+      Bagian ini saya tulis apa adanya: semuanya adalah minat yang sedang saya kembangkan,
+      bukan keahlian yang sudah teruji. Saya menikmati proses menjajakinya &mdash; pelan-pelan,
+      tanpa berpura-pura.
+    </p>
+
+    <ul class="sprouts reveal d2" style="margin-top:2.2rem">
+      <li class="spr-item open">
+        <button class="spr-btn" type="button" aria-expanded="true" aria-controls="sp1" id="sb1">
+          <span class="spr-dot" aria-hidden="true"></span>
+          <span class="spr-name">Marketing</span>
+          <span class="spr-tag">menjajaki</span>
+          <svg class="spr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="spr-panel" id="sp1" role="region" aria-labelledby="sb1">
+          <div class="spr-inner"><p>Penasaran bagaimana sebuah karya bisa sampai dikenal dan dipercaya orang. Untuk sekarang, saya mulai dari memperhatikan dan mencatat.</p></div>
+        </div>
+      </li>
+      <li class="spr-item">
+        <button class="spr-btn" type="button" aria-expanded="false" aria-controls="sp2" id="sb2">
+          <span class="spr-dot" aria-hidden="true"></span>
+          <span class="spr-name">Menjadi Promoter</span>
+          <span class="spr-tag">menjajaki</span>
+          <svg class="spr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="spr-panel" id="sp2" role="region" aria-labelledby="sb2">
+          <div class="spr-inner"><p>Ingin melatih keberanian menjelaskan sesuatu secara langsung di depan orang.</p></div>
+        </div>
+      </li>
+      <li class="spr-item">
+        <button class="spr-btn" type="button" aria-expanded="false" aria-controls="sp3" id="sb3">
+          <span class="spr-dot" aria-hidden="true"></span>
+          <span class="spr-name">Editing</span>
+          <span class="spr-tag">menjajaki</span>
+          <svg class="spr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="spr-panel" id="sp3" role="region" aria-labelledby="sb3">
+          <div class="spr-inner"><p>Tertarik menyusun cerita dari potongan klip. Masih tahap mencoba &mdash; alat andalan belum saya tetapkan.</p></div>
+        </div>
+      </li>
+      <li class="spr-item">
+        <button class="spr-btn" type="button" aria-expanded="false" aria-controls="sp4" id="sb4">
+          <span class="spr-dot" aria-hidden="true"></span>
+          <span class="spr-name">Desain</span>
+          <span class="spr-tag">menjajaki</span>
+          <svg class="spr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="spr-panel" id="sp4" role="region" aria-labelledby="sb4">
+          <div class="spr-inner"><p>Sedang belajar bahwa tampilan yang rapi itu membantu orang memahami &mdash; bukan sekadar mempercantik.</p></div>
+        </div>
+      </li>
+      <li class="spr-item">
+        <button class="spr-btn" type="button" aria-expanded="false" aria-controls="sp5" id="sb5">
+          <span class="spr-dot" aria-hidden="true"></span>
+          <span class="spr-name">Konten Digital</span>
+          <span class="spr-tag">menjajaki</span>
+          <svg class="spr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="spr-panel" id="sp5" role="region" aria-labelledby="sb5">
+          <div class="spr-inner"><p>Ingin bisa membuat konten yang jujur, sederhana, dan benar-benar berguna bagi orang yang menontonnya.</p></div>
+        </div>
+      </li>
+    </ul>
+    <p class="spr-hint reveal d3">Ketuk untuk membaca &rarr;</p>
+  </section>
+
+  <!-- ============ ARAH & TUJUAN ============ -->
+  <section class="sec wrap" id="tujuan">
+    <div class="sec-head">
+      <span class="sec-no">06 / Arah &amp; tujuan</span>
+      <span class="sec-note">ke depan</span>
+    </div>
+    <h2 class="sec-title reveal">Ke mana saya hendak pergi.</h2>
+
+    <ol class="compass reveal d1" style="margin-top:2.4rem">
+      <li>
+        <span class="cp-no">01</span>
+        <span class="cp-label">Sedang berjalan</span>
+        <p>Menyelesaikan kelas 12 SMK sambil terus membangun dan memperbaiki kemampuan web saya.</p>
+      </li>
+      <li>
+        <span class="cp-no">02</span>
+        <span class="cp-label">Langkah berikutnya</span>
+        <p>Melanjutkan pendidikan tinggi untuk memperdalam pemrograman dan pengembangan web.</p>
+      </li>
+      <li>
+        <span class="cp-no">03</span>
+        <span class="cp-label">Arah panjang</span>
+        <p>Menjadi full-stack developer yang mampu mengurus produk dari tampilan paling depan sampai server di belakangnya &mdash; dan tumbuh bersama tim yang baik.</p>
+      </li>
+    </ol>
+
+    <blockquote class="manifesto reveal d2">
+      &ldquo;Belum bisa&rdquo; bukan alasan untuk berhenti &mdash; hanya penanda bahwa ada materi berikutnya yang sedang menunggu.
+    </blockquote>
+  </section>
+
+  <!-- ============ KONTAK ============ -->
+  <section class="sec wrap" id="kontak" style="padding-bottom:clamp(2.5rem,6vh,4rem)">
+    <div class="sec-head">
+      <span class="sec-no">07 / Kontak</span>
+      <span class="sec-note">pintu terbuka</span>
+    </div>
+    <h2 class="sec-title reveal">Mari <span class="outline">terhubung.</span></h2>
+    <p class="sec-sub reveal d1">
+      Untuk diskusi, kesempatan belajar, undangan kolaborasi, atau sekadar berkenalan &mdash;
+      saya senang menerima pesan. Silakan pilih jalur yang paling nyaman.
+    </p>
+
+    <div class="contact-grid reveal d2">
+      <a class="cc cc-live" href="mailto:thisiszaki18@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14"/><path d="M3 7l9 6 9-6"/></svg>
+        <span class="cc-top">Email</span>
+        <span class="cc-val">thisiszaki18@gmail.com</span>
+        <span class="cc-note">Kirim pesan langsung melalui email</span>
+      </a>
+      <a class="cc cc-live" href="https://wa.me/6289530977029" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="cc-top">WhatsApp</span>
+        <span class="cc-val">+62 895-3097-7029</span>
+        <span class="cc-note">Chat saya di WhatsApp</span>
+      </a>
+      <a class="cc cc-live" href="https://discord.gg/QeHQ3vjmv" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 4a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
+        <span class="cc-top">Discord</span>
+        <span class="cc-val">Gabung server</span>
+        <span class="cc-note">Mari terhubung di server Discord</span>
+      </a>
+      <a class="cc cc-live" href="https://oasse.id" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        <span class="cc-top">Tepat</span>
+        <span class="cc-val">oasse.id</span>
+        <span class="cc-note">situs tempat saya belajar &amp; magang</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="bagikan" aria-labelledby="shareSectionTitle">
+    <div class="sec-head">
+      <span class="sec-no">08 / Bagikan Informasi</span>
+      <span class="sec-note">terima kasih atas support-nya</span>
+    </div>
+    <aside class="share-box reveal" aria-labelledby="shareSectionTitle">
+      <div>
+        <p class="label">Bantu sebarkan</p>
+        <h2 class="about-title" id="shareSectionTitle">Bagikan Link Portofolio</h2>
+        <p class="share-message">Bagikan informasi ini kepada teman-teman dan siapa pun yang ingin mengenal perjalanan saya. Terima kasih atas support dan dukungannya!</p>
+      </div>
+      <div class="share-actions">
+        <button class="btn" id="shareNative" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg>
+          Bagikan
+        </button>
+        <button class="btn" id="copyPortfolioLink" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+          Salin Link
+        </button>
+      </div>
+    </aside>
+  </section>
+
+  <section class="sec wrap" id="dukung" aria-labelledby="supportTitle">
+    <div class="sec-head">
+      <span class="sec-no">09 / Support</span>
+      <span class="sec-note">terima kasih atas dukungannya</span>
+    </div>
+    <aside class="share-box reveal">
+      <div>
+        <p class="label">Dukung perjalanan saya</p>
+        <h2 class="about-title" id="supportTitle">Setiap dukungan berarti.</h2>
+        <p class="share-message">Dukunganmu sangat membantu aku menghargai itu ..terus life long learning,belajar akhir hayat  berkarya, dan mengembangkan kemampuan. Terima kasih sudah menjadi bagian dari perjalanan ini.</p>
+      </div>
+      <a class="btn btn-lg" href="https://sociabuzz.com/thisiszaki18/tribe" target="_blank" rel="noopener noreferrer">
+        Dukung via Sociabuzz
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+      </a>
+    </aside>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <div class="foot-brand">
+      <span class="foot-z">Z.</span>
+      <span class="foot-c">&copy; 2025 Zaki &mdash; Portofolio Pribadi</span>
+    </div>
+    <span class="foot-note">halaman ini ikut tumbuh seiring pemiliknya</span>
+    <div class="foot-right">
+      <a class="icon-btn" href="https://www.tiktok.com/@thisiszaki18" target="_blank" rel="noopener noreferrer" aria-label="TikTok @thisiszaki18">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+      </a>
+      <a class="icon-btn" href="https://www.instagram.com/thisiszaki18/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @thisiszaki18">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <button class="icon-btn" id="toTop" type="button" aria-label="Kembali ke atas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 11l7-7 7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MODAL CATATAN MAGANG ============ -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <span class="modal-index" id="modalIndex">01</span>
+      <h3 id="modalTitle">&mdash;</h3>
+      <button class="icon-btn" id="modalClose" type="button" aria-label="Tutup catatan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
+    <p class="modal-desc" id="modalDesc"></p>
+    <dl class="modal-meta" id="modalMeta"></dl>
+    <div class="modal-tags" id="modalTags"></div>
+  </div>
+</div>
+
+<!-- Toast notifikasi -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <i aria-hidden="true"></i><span id="toastText"></span>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(s){return document.querySelector(s)},
+      $$=function(s){return document.querySelectorAll(s)},
+      reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Tema: toggle + simpan preferensi ---------- */
+  var root=document.documentElement;
+  $('#themeToggle').addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('zaki-theme',next)}catch(e){}
+  });
+
+  /* ---------- Navigasi responsif ---------- */
+  var menuToggle=$('#menuToggle'),primaryNavigation=$('#primaryNavigation');
+  function closeMenu(){
+    primaryNavigation.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded','false');
+    menuToggle.setAttribute('aria-label','Buka navigasi');
+  }
+  menuToggle.addEventListener('click',function(){
+    var isOpen=menuToggle.getAttribute('aria-expanded')==='true';
+    primaryNavigation.classList.toggle('open',!isOpen);
+    menuToggle.setAttribute('aria-expanded',String(!isOpen));
+    menuToggle.setAttribute('aria-label',isOpen?'Buka navigasi':'Tutup navigasi');
+  });
+  primaryNavigation.querySelectorAll('a').forEach(function(link){link.addEventListener('click',closeMenu)});
+  addEventListener('keydown',function(event){if(event.key==='Escape')closeMenu()});
+  addEventListener('resize',function(){if(window.innerWidth>1000)closeMenu()});
+
+  /* ---------- Jam WIB real-time (header + dashboard) ---------- */
+  var clockTop=$('#clockTop'),clockPanel=$('#clockPanel');
+  var fmt=new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Jakarta'});
+  function tick(){var t=fmt.format(new Date())+' WIB';clockTop.textContent=t;clockPanel.textContent=t}
+  tick();setInterval(tick,1000);
+
+  /* ---------- Progress bar scroll (transform saja — hemat) ---------- */
+  var bar=$('#progressBar'),raf=false;
+  function updateBar(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.transform='scaleX('+(max>0?h.scrollTop/max:0)+')';raf=false;
+  }
+  addEventListener('scroll',function(){if(!raf){raf=true;requestAnimationFrame(updateBar)}},{passive:true});
+  updateBar();
+
+  /* ---------- Kata yang berganti di kalimat hero ---------- */
+  var rotor=$('.rotor');
+  if(rotor&&!reduceMotion){
+    var words=rotor.querySelectorAll('.rotor-word'),wi=0;
+    var setW=function(){rotor.style.width=words[wi].offsetWidth+'px'};
+    setW();
+    if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setW);
+    addEventListener('resize',setW);
+    setInterval(function(){
+      words[wi].classList.remove('on');
+      wi=(wi+1)%words.length;
+      words[wi].classList.add('on');
+      setW();
+    },2600);
+  }else if(rotor){
+    rotor.classList.add('static');
+  }
+
+  /* ---------- Reveal saat digulir ---------- */
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}
+    });
+  },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  $$('.reveal').forEach(function(el){io.observe(el)});
+
+  /* ---------- Navigasi aktif mengikuti seksi ---------- */
+  var links={};
+  $$('.nav a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a});
+  var secIO=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        Object.keys(links).forEach(function(k){links[k].classList.remove('active')});
+        if(links[en.target.id])links[en.target.id].classList.add('active');
+      }
+    });
+  },{rootMargin:'-40% 0px -55% 0px'});
+  ['tentang','magang','dokumentasi','minat','kontak','bagikan','dukung'].forEach(function(id){
+    var el=document.getElementById(id);if(el)secIO.observe(el);
+  });
+
+  /* ---------- Akordeon minat (satu terbuka dalam satu waktu) ---------- */
+  $$('.spr-item').forEach(function(item){
+    var btn=item.querySelector('.spr-btn');
+    btn.addEventListener('click',function(){
+      var akanBuka=!item.classList.contains('open');
+      $$('.spr-item').forEach(function(other){
+        other.classList.remove('open');
+        other.querySelector('.spr-btn').setAttribute('aria-expanded','false');
+      });
+      if(akanBuka){
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+
+  /* ---------- Data catatan magang + modal ---------- */
+  var notes=[
+    {title:'Pembuatan & Pengembangan Website',focus:'Pengembangan web',
+     desc:'Selama magang, saya belajar dan mempraktikkan pembuatan website untuk situs oasse.id — dari menyusun halaman sampai mengembangkannya agar fiturnya berjalan sebagaimana mestinya. Di sinilah teori yang dulu hanya saya baca akhirnya benar-benar saya pegang sendiri.',
+     tags:['Web Development','oasse.id','Magang']},
+    {title:'Konfigurasi DNS & IP',focus:'DNS & IP',
+     desc:'Saya belajar menghubungkan website dengan DNS dan IP — memahami bagaimana sebuah domain menunjuk ke server yang tepat sampai situs dapat diakses dari mana saja. Bagian ini mengajarkan saya bahwa pekerjaan website tidak berhenti di kode.',
+     tags:['DNS','IP','Infrastruktur']},
+    {title:'Firebase & MySQL',focus:'Basis data',
+     desc:'Saya menggunakan Firebase dan MySQL sebagai bagian dari pekerjaan magang — dua lingkungan kerja data yang mengajarkan saya cara menyimpan, mengatur, dan mengambil data dengan tertata.',
+     tags:['Firebase','MySQL','Basis Data']},
+    {title:'Menjalankan Website Online',focus:'Deployment',
+     desc:'Dari berkas di komputer sampai situs yang benar-benar hidup di internet: saya mempraktikkan proses menjalankan website secara online — memastikan semua bagian terhubung dan dapat diakses.',
+     tags:['Deployment','Online','Rilis']},
+    {title:'Firebase Authentication & Storage',focus:'Backend & autentikasi',
+     desc:'Saya juga pernah membangun website yang terhubung ke backend — termasuk fitur Firebase Authentication untuk sistem masuk pengguna, dan Firebase Storage untuk menyimpan berkas datanya.',
+     tags:['Firebase Auth','Firebase Storage','Backend']}
+  ];
+  var modal=$('#modal');
+  function openModal(i){
+    var n=notes[i];if(!n)return;
+    $('#modalIndex').textContent=('0'+(i+1)).slice(-2);
+    $('#modalTitle').textContent=n.title;
+    $('#modalDesc').textContent=n.desc;
+    $('#modalMeta').innerHTML=
+      '<div class="mm"><dt>Tempat</dt><dd>PT Ascon Inovasi Data</dd></div>'+
+      '<div class="mm"><dt>Situs</dt><dd>oasse.id</dd></div>'+
+      '<div class="mm"><dt>Fokus</dt><dd>'+n.focus+'</dd></div>';
+    $('#modalTags').innerHTML=n.tags.map(function(t){return '<span class="tag">'+t+'</span>'}).join('');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    $('#modalClose').focus();
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+  $$('.project-row').forEach(function(b){
+    b.addEventListener('click',function(){openModal(+b.dataset.index)});
+  });
+  $('#modalClose').addEventListener('click',closeModal);
+  $('#modalBackdrop').addEventListener('click',closeModal);
+  addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&modal.classList.contains('open'))closeModal();
+  });
+
+  /* ---------- Toast ---------- */
+  var toastEl=$('#toast'),toastText=$('#toastText'),toastTimer;
+  function toast(msg){
+    toastText.textContent=msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){toastEl.classList.remove('show')},3000);
+  }
+  function copyPortfolioLink(){
+    var url=window.location.href;
+    function fallbackCopy(){
+      var field=document.createElement('textarea');
+      field.value=url;field.setAttribute('readonly','');
+      field.style.position='fixed';field.style.opacity='0';
+      document.body.appendChild(field);field.select();
+      var copied=document.execCommand('copy');
+      document.body.removeChild(field);
+      toast(copied?'Link portofolio berhasil disalin.':'Salin link dari bilah alamat browser.');
+    }
+    if(navigator.clipboard&&window.isSecureContext){
+      navigator.clipboard.writeText(url).then(function(){toast('Link portofolio berhasil disalin.')}).catch(fallbackCopy);
+    }else fallbackCopy();
+  }
+  $('#copyPortfolioLink').addEventListener('click',copyPortfolioLink);
+  $('#shareNative').addEventListener('click',function(){
+    if(!navigator.share){copyPortfolioLink();return}
+    navigator.share({title:document.title,text:'Kenali perjalanan belajar dan pengalaman Zaki di bidang web development.',url:window.location.href})
+      .catch(function(error){if(error.name!=='AbortError')toast('Link belum berhasil dibagikan. Coba salin link.');});
+  });
+  /* Tombol & tautan placeholder memberi pesan jujur, bukan berpura-pura */
+  $$('[data-toast]').forEach(function(el){
+    el.addEventListener('click',function(e){
+      if(el.tagName==='A')e.preventDefault();
+      toast(el.getAttribute('data-toast'));
+    });
+  });
+
+  /* ---------- Tombol magnetik (hanya perangkat dengan kursor) ---------- */
+  if(matchMedia('(pointer:fine)').matches&&!reduceMotion){
+    $$('.magnetic').forEach(function(btn){
+      btn.addEventListener('mousemove',function(e){
+        var r=btn.getBoundingClientRect(),
+            x=(e.clientX-r.left-r.width/2)/r.width,
+            y=(e.clientY-r.top-r.height/2)/r.height;
+        btn.style.transform='translate('+(x*10).toFixed(1)+'px,'+(y*8).toFixed(1)+'px)';
+      });
+      btn.addEventListener('mouseleave',function(){btn.style.transform=''});
+    });
+  }
+
+  /* ---------- Kembali ke atas ---------- */
+  $('#toTop').addEventListener('click',function(){scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'})});
+})();
+</script>
+<script type="module" src="javascript/documentation.js"></script>
+</body>
+</html>
